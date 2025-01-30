@@ -35,8 +35,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            KateProxa/MLOps_HW1:${{ github.sha }}
-            KateProxa/MLOps_HW1:latest
+            ghcr.io/kateproxa/mlops_hw1:${{ github.sha }}
+            ghcr.io/kateproxa/mlops_hw1:latest
 
   lint_and_format_code:
     runs-on: ubuntu-latest
