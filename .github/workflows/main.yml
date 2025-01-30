@@ -15,7 +15,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache
-          key: ${{ runner.os }}-cache  # Уникальный ключ для кеша
+          key: ${{ runner.os }}-cache  
           restore-keys: |
             ${{ runner.os }}-cache
       - name: Set up QEMU
@@ -35,8 +35,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            kcherenkovv1/ml_ops1:${{ github.sha }}
-            kcherenkovv1/ml_ops1:latest
+            KateProxa/MLOps_HW1:${{ github.sha }}
+            KateProxa/MLOps_HW1:latest
 
   lint_and_format_code:
     runs-on: ubuntu-latest
@@ -91,3 +91,27 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
           twine upload --repository pypi dist/*
+
+  build_docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Quarto
+        run: |
+          sudo apt-get install quarto 
+
+      - name: Generate documentation from EDA.ipynb to HTML
+        run: |
+          quarto render EDA.ipynb --to html 
+          
+      - name: Move documentation to public directory for GitHub Pages 
+        run: |
+          mkdir -p public && mv EDA.html public/
+
+      - name: Upload documentation as artifact 
+        if : success()
+        uses : actions/upload-artifact@v3 
+        with :
+           name : docs 
+           path : public/
